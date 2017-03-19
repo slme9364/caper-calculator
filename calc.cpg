@@ -1,0 +1,26 @@
+%token Number<double> Add Sub Mul Div Point Sin Cos Tan Sqrt Begin End;
+%namespace calc;
+%dont_use_stl;
+
+Expr<double>        : [Identity] Term(0)
+                    | [MakeAdd] Expr(0) Add Term(1)
+                    | [MakeSub] Expr(0) Sub Term(1)
+                    ;
+
+Term<double>        : [Identity] Advanced(0)
+                    | [MakeMul] Term(0) Mul Advanced(1)
+                    | [MakeDiv] Term(0) Div Advanced(1)
+                    ;
+
+Advanced<double>    : [Identity] Primary(0)
+                    | [MakeSin] Sin Primary(0)
+                    | [MakeCos] Cos Primary(0)
+                    | [MakeTan] Tan Primary(0)
+                    | [MakeSqrt] Sqrt Primary(0)
+                    ;
+
+Primary<double>     : [Identity] Number(0)
+                    | [MakeDouble] Number(0) Point Number(1)
+                    | [Identity] Begin Expr(0) End
+                    ;
+
