@@ -1,8 +1,11 @@
-#include <iostream>
-#include <cstdio>
-#include <cctype>
-#include <cmath>
-#include "calc.hpp"
+#ifndef SCANNER_HPP
+#define SCANNER_HPP
+
+#include<iostream>
+#include<cstdio>
+#include<cctype>
+#include<cmath>
+#include"SemanticAction.hpp"
 
 class unexpected_char : public std::exception {};
 
@@ -61,7 +64,7 @@ class Scanner {
         c = unget_;
         unget_ = EOF;
       } else if(c_ == e_){
-        c = EOF; 
+        c = EOF;
       } else{
         c = *c_++;
       }
@@ -80,66 +83,5 @@ class Scanner {
 
 };
 
-struct SemanticAction {
+#endif
 
-  void syntax_error(){}
-  void stack_overflow(){}
-  void downcast(double& x, double y) { x = y; }
-  void upcast(double& x, double y) { x = y; }
-
-  double Identity(double n) { return n; }
-  double MakeAdd(double x, double y){
-    return x + y;
-  }
-  double MakeSub(double x, double y){
-    return x - y;
-  }
-  double MakeMul(double x, double y){
-    return x * y;
-  }
-  double MakeDiv(double x, double y){
-    return x / y;
-  }
-  double MakeDouble(double x, double y){//自分で小数を入力した際に起こす
-    int nod = log10(y) + 1;//log10(y)+1でyの桁数を求める
-    for(int i = 0; i < nod; i++)  y /= 10;//yを小数点以下の値にする
-    return x + y;
-  }
-  double MakeSin(double x){
-    return sin(x);
-  }
-  double MakeCos(double x){
-    return cos(x);
-  }
-  double MakeTan(double x){
-    return tan(x);
-  }
-  double MakeSqrt(double x){
-    return sqrt(x);
-  }
-};
-
-int main( int, char** ){
-  using is_iterator = std::istreambuf_iterator<char>;
-  is_iterator b(std::cin);
-  is_iterator e;
-  Scanner<is_iterator> s(b, e);
-
-  SemanticAction sa;
-
-  calc::Parser<double, SemanticAction> parser(sa);
-
-  calc::Token token;
-  while(true){
-    int v;
-    token = s.get(v);
-    if(parser.post(token, v)) break;
-  }
-
-  double v;
-  if(parser.accept(v)){
-    std::cout << v << std::endl;
-  }
-
-  return 0;
-}
