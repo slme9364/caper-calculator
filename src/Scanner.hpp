@@ -23,7 +23,7 @@ class Scanner {
         c = getc();
       }while(isspace(c));
 
-      // 記号類
+      // operator
       switch(c){
         case '+': return calc::token_Add;
         case '-': return calc::token_Sub;
@@ -39,7 +39,7 @@ class Scanner {
         case EOF: return calc::token_eof;
       }
 
-      // 数字
+      // number
       if(isdigit(c)){
         int n = 0;
         while(c != EOF && isdigit(c)) {
